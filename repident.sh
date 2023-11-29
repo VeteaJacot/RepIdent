@@ -38,7 +38,7 @@ while getopts ':v:p:h' arg; do
   esac
 done
 
-if test ! $@
+if test ! "$@"
 then
     echo "\n$help"
     exit
