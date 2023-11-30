@@ -38,11 +38,18 @@ while getopts ':v:p:h' arg; do
   esac
 done
 
-if test ! "$@"
+
+if [ $# -eq 0 ];
 then
-    echo "\n$help"
-    exit
+   echo "\n$help"
+   exit
 fi
+
+#if test ! "$@"
+#then
+#    echo "\n$help"
+#    exit
+#fi
 
 
 python3 parcourir.py $P $V

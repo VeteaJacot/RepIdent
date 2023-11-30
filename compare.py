@@ -75,13 +75,13 @@ def comp(path, dicSamp, dicIdent, ver):
         
                 else:
                     
-                    if pos in dicSamp[sample] :
+                    if pos in dicSamp[sample]:
                         
                         dicSamp[sample][pos].append(seq)
                         
                         for i in dicSamp[sample][pos][:-1]:
                             
-                            if seq == i:
+                            if seq == i and seq != "<DEL>" and seq != "<INS>":
                                 
                                 dicIdent[sample][pos] += 1
                         
@@ -91,7 +91,7 @@ def comp(path, dicSamp, dicIdent, ver):
                         dicIdent[sample][pos] = 0
                 
                 
-            if ver == "2":          # approximate position variant count version
+            elif ver == "2":          # approximate position variant count version
                 
                 if dicSamp[sample] == {}:
                 
@@ -108,27 +108,27 @@ def comp(path, dicSamp, dicIdent, ver):
                         
                         for i in dicSamp[sample][pos][:-1]:
                             
-                            if seq == i:
+                            if seq == i and seq != "<DEL>" and seq != "<INS>":
                                 
                                 dicIdent[sample][pos] += 1
                     
-                        for p in (range (int(pos)-10,int(pos)-1)):                            
+                        for p in (range (int(pos)-10,int(pos)-1)):   
                             
-                            if str(p) in dicSamp[sample] :
+                            if str(p) in list(dicSamp[sample].keys()) :
                                 
                                 for i in dicSamp[sample][str(p)][:-1]:
                                     
-                                    if seq == i:
+                                    if seq == i and seq != "<DEL>" and seq != "<INS>":
                                         
                                         dicIdent[sample][pos] += 1
                                 
                         for p in (range (int(pos)+1,int(pos)+10)):
                             
-                            if str(p) in dicSamp[sample] :
+                            if str(p) in list(dicSamp[sample].keys()) :
                                 
                                 for i in dicSamp[sample][str(p)][:-1]:
                                     
-                                    if seq == i:
+                                    if seq == i and seq != "<DEL>" and seq != "<INS>":
                                         
                                         dicIdent[sample][pos] += 1
                             
@@ -138,7 +138,7 @@ def comp(path, dicSamp, dicIdent, ver):
                         dicIdent[sample][pos] = 0
                         
                 
-            if ver == "3":          # strict position identity version
+            elif ver == "3":          # strict position identity version
             
                 if dicSamp[sample] == {}:
                 
@@ -150,7 +150,10 @@ def comp(path, dicSamp, dicIdent, ver):
                     if pos in dicSamp[sample] :
                         
                         dicSamp[sample][pos].append(seq)
-                        dicIdent[sample][pos] = compIdent(dicSamp[sample][pos])
+                        
+                        if seq != "<DEL>" and seq != "<INS>":
+                        
+                            dicIdent[sample][pos] = compIdent(dicSamp[sample][pos])
                         
                     else:
                         
