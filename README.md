@@ -20,13 +20,7 @@ where
 
    -p : set path to the folder from which vcf files will be searched for (in a recursive way) for analysis (default = ~/)
 
-   -v : set identity calculation mode (default = 3)
-                
-   	- 1: count number of identical variants in all replicates for each position
-
-   	- 2: count number of identical variants in all replicates in a region of ten nucleotides around each position 
-
-   	- 3: compute mean identity of all variants in all replicates for each position
+   -v : set identity calculation mode (default = 3) (1: count number of identical variants in all replicates for each position ; 2: count number of identical variants in all replicates in a region of ten nucleotides around each position ; 3: compute mean identity of all variants in all replicates for each position)
          
             
 Example data is included for testing purposes ("Data" folder) with no licence attached. The python and bash script files are distributed under an MIT licence.
@@ -40,22 +34,22 @@ The included "Data" folder contains 3 replicate files for each of two samples. T
 
 This will start the RepIdent script in version 1, which returns the number of identical variants at the same position for all replicates for each sample (P15 & P30), and start searching for VCF files to analyze in the provided "Data" folder. Expected result is
 	
-	"The replicates of the P30 sample have in total 2 identical variants
-	 The replicates of the P15 sample have in total 16 identical variants"
+             "The replicates of the P30 sample have in total 2 identical variants
+              The replicates of the P15 sample have in total 16 identical variants"
 		 
 	- ./repident.sh -p [installation_folder]/RepIdent-main/Data/ -v 2
 
 This will start the RepIdent script in version 2, which returns the number of identical variants in a position range of 10 around the original position for all replicates for each sample (P15 & P30), and start searching for VCF files to analyze in the provided "Data" folder. Expected result is
 	
-	"The replicates of the P30 sample have in total 2 identical variants
-	 The replicates of the P15 sample have in total 18 identical variants"
+             "The replicates of the P30 sample have in total 2 identical variants
+              The replicates of the P15 sample have in total 18 identical variants"
 		 
 	- ./repident.sh -p [installation_folder]/RepIdent-main/Data/ -v 3
 
 This will start the RepIdent script in version 2, which returns the identity percentage of variants at the same position for all replicates for each sample (P15 & P30), and start searching for VCF files to analyze in the provided "Data" folder. Expected result is
 	
-	"The replicates of the P30 sample show an identity of 06.6%
-	The replicates of the P15 sample show an identity of 09.9%"
+             "The replicates of the P30 sample show an identity of 06.6%
+              The replicates of the P15 sample show an identity of 09.9%"
 
 	- ./repident.sh -v 1
 
