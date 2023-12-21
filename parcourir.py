@@ -13,28 +13,33 @@ import compare
     
 
 # browsing function to recursively check if each file is a "variant call format" file or if it is a folder
-# if a .vcf is encountered, the comp function of the compare.py script is called to add its information to the dicIdent dictionnary
-# if a folder is encountered, the function calls itself to search in that folder
+
+
 
 def browse(path, ver):
 
     
     for i in listdir(path):
+        
         if isfile(join(path,i)):
-            if i.split('.')[-1] == 'vcf':
+            
+            if i.split('.')[-1] == 'vcf': # if a VCF file (.vcf extension) is encountered, the comp function of the compare.py script is called to add its information to the identity dictionnary (dicIdent)
+                
                 compare.comp(join(path,i), dicSamp, dicIdent, ver)
-        if isdir(join(path,i)):
+                
+        if isdir(join(path,i)): # if a folder is encountered, the function calls itself to search in that folder
+            
             browse(join(path,i), ver)
             
     return(dicIdent)
 
 
 # final function to transform the dictionnary built by compare.py into an intepretable result dictionnary 
-# the function then returns a one-line summary of each sample's replicates metric
+# the function then returns a one-line summary of each sample's replicates identity
 
 def synth(dic, ver):
     
-    if dic == {}:
+    if dic == {}: # return an error message in case no VCF files were found and the dictionary is empty
         
         res = "No VCF files were found in the specified folder : " + str(sys.argv[1]) + "\nCheck extensions and location of files you want to analyze"
         
@@ -107,14 +112,23 @@ elif int(sys.argv[2]) not in [1,2,3]:
     
 else:
     
-    dicSamp = {}
-    dicIdent = {}
+    dicSamp = {}    # initialisation of a dictionary structure to store encountered variant sequences
+    dicIdent = {}   # initialisation of another dictionary structure to store computed identity values between replicates
+    
     version = ["\"strict position variant count\"", "\"approximate position variant count\"", "\"strict position identity\""]
     
     print("\nProcess started for path \"" + sys.argv[1] + "\" in " + version[int(sys.argv[2])-1] + " version")
     
-    print( synth( browse( sys.argv[1], sys.argv[2] ), sys.argv[2] ) + "\n")
+    dicRes = browse( sys.argv[1], sys.argv[2] )  # use of the browse function defined in this file to build the dicSamp et dicIdent structures from the files encountered
+    
+    if int(sys.argv[3]) == 1:  # if the user used the '-f' option, a file is generated, containing the raw dicIdent structure
+        
+        with open("Report.txt", 'w') as report:
             
+            print(dicRes, file=report)
+    
+    print( synth( dicRes, sys.argv[2] ) + "\n")  # use of the synth function defined in this file to process results, which are then printed
+     
     
         
             

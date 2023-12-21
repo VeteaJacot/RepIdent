@@ -9,13 +9,13 @@ Created on Tue Nov 14 08:52:32 2023
 # Function for version 3 (strict position identity) of the script
 # compares each newly-added sequence to each of the already-added sequences of the dictionnary and returns a mean of all sequences identities (identical bases / all bases)
 
-def compIdent(list):
+def compIdent(lst):
     
     ident = []
     
-    for i in list:
+    for i in lst:
         
-        for j in (list[0:(list.index(i))]):
+        for j in (lst[0:(lst.index(i))]):
             
             match = 0
             count = 0
@@ -33,11 +33,11 @@ def compIdent(list):
                            
             ident.append(( match / count ) * 100)
             
-    if ident == []:
+    if ident == []:  # in case no other sequence were found, total identity is initialised at 100%
         
         return(100.0)
             
-    else:
+    else:  # else, give the mean of all computed identities
 
         return( sum(ident) / len(ident) )
             
@@ -66,14 +66,14 @@ def comp(path, dicSamp, dicIdent, ver):
             
             if ver == "1":          # strict position variant count version
                 
-                if dicSamp[sample] == {}:
+                if dicSamp[sample] == {}: # if the sample is not already present in the sequences dictionary, an item is created for it
                 
                     dicPos = {pos : [seq]}
                     dicPosId = {pos : 0}
                     dicSamp[sample] = dicPos
                     dicIdent[sample] = dicPosId
         
-                else:
+                else: 
                     
                     if pos in dicSamp[sample]:
                         
@@ -81,11 +81,11 @@ def comp(path, dicSamp, dicIdent, ver):
                         
                         for i in dicSamp[sample][pos][:-1]:
                             
-                            if seq == i and seq != "<DEL>" and seq != "<INS>":
+                            if seq == i and seq != "<DEL>" and seq != "<DUP>":  # if a corresponding variant is found in the same position, the 'identity counter' is incremented by 1 ('DEL' and 'DUP' values are ignored) 
                                 
                                 dicIdent[sample][pos] += 1
                         
-                    else:
+                    else:  # if the position is not already present in the corresponding sample item of the sequences dictionary, an item is created for it
                         
                         dicSamp[sample][pos] = [seq]
                         dicIdent[sample][pos] = 0
@@ -93,7 +93,7 @@ def comp(path, dicSamp, dicIdent, ver):
                 
             elif ver == "2":          # approximate position variant count version
                 
-                if dicSamp[sample] == {}:
+                if dicSamp[sample] == {}:  # if the sample is not already present in the sequences dictionary, an item is created for it
                 
                     dicPos = {pos : [seq]}
                     dicPosId = {pos : 0}
@@ -106,9 +106,11 @@ def comp(path, dicSamp, dicIdent, ver):
                         
                         dicSamp[sample][pos].append(seq)
                         
+                        # if a corresponding variant is found in the specified range, the 'identity counter' is incremented by 1 ('DEL' and 'DUP' values are ignored) 
+                        
                         for i in dicSamp[sample][pos][:-1]:
                             
-                            if seq == i and seq != "<DEL>" and seq != "<INS>":
+                            if seq == i and seq != "<DEL>" and seq != "<DUP>":
                                 
                                 dicIdent[sample][pos] += 1
                     
@@ -118,7 +120,7 @@ def comp(path, dicSamp, dicIdent, ver):
                                 
                                 for i in dicSamp[sample][str(p)][:-1]:
                                     
-                                    if seq == i and seq != "<DEL>" and seq != "<INS>":
+                                    if seq == i and seq != "<DEL>" and seq != "<DUP>": 
                                         
                                         dicIdent[sample][pos] += 1
                                 
@@ -128,11 +130,11 @@ def comp(path, dicSamp, dicIdent, ver):
                                 
                                 for i in dicSamp[sample][str(p)][:-1]:
                                     
-                                    if seq == i and seq != "<DEL>" and seq != "<INS>":
+                                    if seq == i and seq != "<DEL>" and seq != "<DUP>":
                                         
                                         dicIdent[sample][pos] += 1
                             
-                    else:
+                    else:  # if the position is not already present in the corresponding sample item of the sequences dictionary, an item is created for it
                             
                         dicSamp[sample][pos] = [seq]
                         dicIdent[sample][pos] = 0
@@ -140,7 +142,7 @@ def comp(path, dicSamp, dicIdent, ver):
                 
             elif ver == "3":          # strict position identity version
             
-                if dicSamp[sample] == {}:
+                if dicSamp[sample] == {}:  # if the sample is not already present in the sequences dictionary, an item is created for it
                 
                     dicPos = {pos : [seq]}
                     dicSamp[sample] = dicPos
@@ -153,9 +155,9 @@ def comp(path, dicSamp, dicIdent, ver):
                         
                         if seq != "<DEL>" and seq != "<INS>":
                         
-                            dicIdent[sample][pos] = compIdent(dicSamp[sample][pos])
+                            dicIdent[sample][pos] = compIdent(dicSamp[sample][pos])  # if a corresponding variant is found in the specified range, the 'identity counter' is updated with the result of the comparison done by the compIdent function ('DEL' and 'DUP' values are ignored) 
                         
-                    else:
+                    else:  # if the position is not already present in the corresponding sample item of the sequences dictionary, an item is created for it
                         
                         dicSamp[sample][pos] = [seq]
                         dicIdent[sample][pos] = 0.0

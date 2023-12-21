@@ -12,7 +12,7 @@ RepIdent is a variant identity calculation program for any number of replicates 
 
 	cd RepIdent-main/
 
-	./repident.sh [-h] [-p <folder path>] [-v <calculation mode>] 
+	./repident.sh [-h] [-p <folder path>] [-v <calculation mode>] [-f]
 
 where
 
@@ -21,6 +21,8 @@ where
    -p : set path to the folder from which vcf files will be searched for (in a recursive way) for analysis (default = ~/)
 
    -v : set identity calculation mode (default = 3) (1: count number of identical variants in all replicates for each position ; 2: count number of identical variants in all replicates in a region of ten nucleotides around each position ; 3: compute mean identity of all variants in all replicates for each position)
+   
+   -f : write detailed results in 'report.txt' file as nested tuples containing the positions of variants encountered for each replicate of each sample, and the identity values computed between replicates
          
             
 Example data is included for testing purposes ("Data" folder) with no licence attached. The python and bash script files are distributed under an MIT licence.
@@ -34,21 +36,21 @@ The included "Data" folder contains 3 replicate files for each of two samples. T
 
 This will start the RepIdent script in version 1, which returns the number of identical variants at the same position for all replicates for each sample (P15 & P30), and start searching for VCF files to analyze in the provided "Data" folder. Expected result is
 	
-"The replicates of the P30 sample have in total 2 identical variants\n
+"The replicates of the P30 sample have in total 2 identical variants
 The replicates of the P15 sample have in total 16 identical variants"
 		 
 	- ./repident.sh -p [installation_folder]/RepIdent-main/Data/ -v 2
 
 This will start the RepIdent script in version 2, which returns the number of identical variants in a position range of 10 around the original position for all replicates for each sample (P15 & P30), and start searching for VCF files to analyze in the provided "Data" folder. Expected result is
 	
-"The replicates of the P30 sample have in total 2 identical variants\n
+"The replicates of the P30 sample have in total 2 identical variants
 The replicates of the P15 sample have in total 18 identical variants"
 		 
 	- ./repident.sh -p [installation_folder]/RepIdent-main/Data/ -v 3
 
 This will start the RepIdent script in version 2, which returns the identity percentage of variants at the same position for all replicates for each sample (P15 & P30), and start searching for VCF files to analyze in the provided "Data" folder. Expected result is
 	
-"The replicates of the P30 sample show an identity of 06.6%\n
+"The replicates of the P30 sample show an identity of 06.6%
 The replicates of the P15 sample show an identity of 09.9%"
 
 	- ./repident.sh -v 1
@@ -60,5 +62,7 @@ This will start the RepIdent script in version 1 and start searching in the defa
 
 This program expects VCF files to have names corresponding to the format " [sample name or number]-[replicate name or number][...].vcf ". VCF files can be placed anywhere inside the folder given as parameter, and VCF-like files (for example, vcf.stats files) can be present in the folder without affecting the program's function.
 
-RepIdent does not consider the same 'DEL' and 'INS' values to be identical for two replicates. Two replicates with the value 'DEL' at the same position 12345 will be considered to be two different variants for this position.
+RepIdent does NOT consider the same 'DEL' and 'DUP' values (deletions and duplications) to be identical for two replicates. Two replicates with the value 'DEL' at the same position 12345 will be considered to be two different variants for this position. This approach is higly conservative, and substantially decreases identity between replicates if a lot of DEL and DUP values are present in the files.
+
+This program is not based on any alignment algorithms for sequence comparison between replicates. This means that variant sequences "ATATAT" and "TATAT" will be computed as having 0% identity even though the second sequence is simply a shift from the first sequence. Be aware that this may result in decreased identity levels between replicates.
 
